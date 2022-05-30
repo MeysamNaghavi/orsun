@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 # get click and open 'لیست کلاس ها'
-def get_classroom_list(driver):
+def get_classrooms_section(driver):
     # open 'کلاس های مجازی' folder from right side
     to_double_click_section1 = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable(
@@ -33,5 +33,5 @@ def get_classroom_list(driver):
     ).click()
 
 
-def get_today_classroom_list(driver):
+def get_today_classrooms_section(driver):
     ...
