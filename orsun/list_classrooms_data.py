@@ -45,11 +45,11 @@ def classrooms_data_creator(response):
     data = []
     for items in matches:
         lesson = {
-                'code': items["1"],
-                'name': items["2"],
-                'fname': items["3"],
-                'lname': items["4"],
-                'mobile': items["5"],
+                'lesson_code': items["1"],
+                'lesson_name': items["2"],
+                'teacher_fname': items["3"],
+                'teacher_lname': items["4"],
+                'teacher_mobile': items["5"],
                 'degree': items["6"],
                 'exam_type': items["7"],
                 'city': items["8"],
