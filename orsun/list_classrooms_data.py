@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from persiantools import characters
 import requests
 import re
 
@@ -37,6 +38,9 @@ def find_required(driver):
 
 # create dict of classrooms data
 def classrooms_data_creator(response):
+    # convert response arabic alphabet to persian
+    response = characters.ar_to_fa(response)
+
     # find where is start data
     regex = re.compile(r"\"rows\":(\[.*])")
     matches = eval(re.search(regex, response)[1])
