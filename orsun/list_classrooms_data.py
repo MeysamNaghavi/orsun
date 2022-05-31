@@ -36,17 +36,15 @@ def find_required(driver):
 
 
 # create dict of classrooms data
-def json_creator(response):
+def classrooms_data_creator(response):
     # find where is start data
     regex = re.compile(r"\"rows\":(\[.*])")
     matches = eval(re.search(regex, response)[1])
 
     # Create useful personalized data from extracted information
-    data = {}
+    data = []
     for items in matches:
-        code_dars = items["1"]
-        classroom = [
-            {
+        lesson = {
                 'code': items["1"],
                 'name': items["2"],
                 'fname': items["3"],
@@ -57,13 +55,7 @@ def json_creator(response):
                 'city': items["8"],
                 'description': items["9"]
             }
-        ]
-        if code_dars in data:
-
-            data[code_dars].append(classroom[0])
-
-        else:
-            data[code_dars] = classroom
+        data.append(lesson)
 
     return data
 
@@ -77,6 +69,6 @@ def get_classrooms_data(driver, base_url):
     req = requests.get(url, headers=my_header)
 
     if req.ok:
-        return json_creator(response=req.text)
+        return classrooms_data_creator(response=req.text)
     else:
         print(f'error in requests : {req.status_code}')
