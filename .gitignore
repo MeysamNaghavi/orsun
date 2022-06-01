@@ -1,3 +1,5 @@
+# ignore main.py temporary,which is used my test
+main.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
