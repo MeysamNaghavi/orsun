@@ -1,5 +1,5 @@
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from orsun import loading
 from time import sleep
@@ -19,6 +19,7 @@ def find_required(driver):
     return id
 
 
+# search lesson_code in site search box
 def find(driver, lesson_code):
     search_box_xpath = f'//*[@id="{find_required(driver)}-inputEl"]'
     search = driver.find_element(By.XPATH, search_box_xpath)
@@ -39,6 +40,7 @@ def find(driver, lesson_code):
     loading.check(driver)
 
 
+# Filter items found based on lesson code
 def matching(driver, lesson_code):
     # List of items found that match the lesson code
     match = []
