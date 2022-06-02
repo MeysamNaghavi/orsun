@@ -24,6 +24,7 @@ def find(driver, lesson_code):
     search = driver.find_element(By.XPATH, search_box_xpath)
 
     # click on search box and clear filed then sleep 0.5 second
+    loading.check(driver)
     search.click()
     search.clear()
     sleep(0.5)
@@ -54,8 +55,7 @@ def matching(driver, lesson_code):
                                f'/div[2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]' \
                                f'/table[{i}]/tbody/tr/td[3]/div'
         if lesson_code in driver.find_element(By.XPATH, lesson_code_in_table).text:
-            match.append(items[i - 1])
-            print(items[i - 1].text)
+            match.append({'row': i, 'webelement': items[i - 1]})
 
     # return selenium WebElement
     return match
