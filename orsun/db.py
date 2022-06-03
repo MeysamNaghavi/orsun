@@ -40,3 +40,35 @@ def save_classroom_details(lesson_code, data):
 
         cursor.execute('INSERT OR REPLACE INTO meetings VALUES (?, ?)', (lesson_code, meetings_details))
 
+
+# create new table for perform search action, just have lessons_code which will be removed after a successful search
+def lesson_codes_for_search():
+    with sqlite3.connect('database.db') as connections:
+
+        cursor = connections.cursor()
+
+        all_lessons_code = cursor.execute('SELECT lesson_code FROM classrooms').fetchall()
+
+        cursor.execute('''CREATE TABLE IF NOT EXISTS codes
+                                (lesson_code text UNIQUE)
+                                ''')
+
+        cursor.executemany('INSERT OR REPLACE INTO codes VALUES (?)', all_lessons_code)
+
+
+def remove_from_codes(lesson_code):
+    with sqlite3.connect('database.db') as connections:
+
+        cursor = connections.cursor()
+
+        cursor.execute(f'DELETE FROM codes WHERE lesson_code = {lesson_code}')
+
+
+# to get one lesson_code from table codes
+def get_one_code():
+    with sqlite3.connect('database.db') as connections:
+        cursor = connections.cursor()
+
+        code = cursor.execute('SELECT lesson_code FROM codes')
+
+        return code.fetchone()
