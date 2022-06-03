@@ -80,7 +80,7 @@ def get_details_data(base_url, bj_and_id):
 def classroom_info(driver, item):
     row = item.get('row')
     classroom_name = f'/html/body/div[5]/div/div/div/div/div/div/div/div[1]/div/div/div/div/div[2]/div[' \
-                 f'2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/table[{row}]/tbody/tr/td[4]/div'
+                     f'2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/table[{row}]/tbody/tr/td[4]/div'
 
     teacher_fname = f'/html/body/div[5]/div/div/div/div/div/div/div/div[1]/div/div/div/div/div[2]/div[' \
                     f'2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/table[{row}]/tbody/tr/td[' \
@@ -118,3 +118,5 @@ def get_details(driver, items, base_url):
         WebDriverWait(driver, 5).until(
             EC.element_to_be_clickable((By.CLASS_NAME, 'x-tool-tool-el.x-tool-img.x-tool-close.x-rtl'))
         ).click()
+
+    return all_classrooms_meetings
