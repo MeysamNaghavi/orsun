@@ -20,11 +20,11 @@ my_header = {
 
 
 def click(driver, item):
+    loading.check(driver)
     details_button = f'/html/body/div[5]/div/div/div/div/div/div/div/div[1]/div/div/div/div/div[2]/div[2]/div/div' \
                      f'/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/table[{item.get("row")}]' \
                      f'/tbody/tr/td[2]/div/img[1]'
 
-    loading.check(driver)
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, details_button))
     ).click()
@@ -33,17 +33,20 @@ def click(driver, item):
 def find_required(driver):
     loading.check(driver)
 
-    bj_link = WebDriverWait(driver, 10).until(
+    bj_link = WebDriverWait(driver, 20).until(
         EC.presence_of_all_elements_located(
             (By.CSS_SELECTOR, '.x-panel-body.x-grid-with-col-lines.x-grid-with-row-lines'
                               '.x-grid-body.x-panel-body-default.x-panel-body-default.x-rtl'
-                              '')))[1].get_attribute('id')
+                              '')))
 
+    bj_link = bj_link[1].get_attribute('id')
     bj_link = bj_link[:bj_link.find('_')]
 
-    id_link = WebDriverWait(driver, 10).until(
+    id_link = WebDriverWait(driver, 20).until(
         EC.presence_of_element_located((By.TAG_NAME, 'iframe'))
-    ).get_attribute('id')
+    )
+
+    id_link = id_link.get_attribute('id')
     id_link = id_link[id_link.find('_') + 1:]
 
     return {'id_link': id_link, 'bj_link': bj_link}
@@ -78,6 +81,8 @@ def get_details_data(base_url, bj_and_id):
 
 # for classroom name and teacher name
 def classroom_info(driver, item):
+    loading.check(driver)
+
     row = item.get('row')
     classroom_name = f'/html/body/div[5]/div/div/div/div/div/div/div/div[1]/div/div/div/div/div[2]/div[' \
                      f'2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/table[{row}]/tbody/tr/td[4]/div'

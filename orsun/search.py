@@ -22,42 +22,48 @@ def find_required(driver):
 # search lesson_code in site search box
 def find(driver, lesson_code):
     search_box_xpath = f'//*[@id="{find_required(driver)}-inputEl"]'
-    search = driver.find_element(By.XPATH, search_box_xpath)
+    search = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, search_box_xpath))
+    )
 
     # click on search box and clear filed then sleep 0.5 second
     loading.check(driver)
     search.click()
+
+    # clear search field
     search.clear()
     sleep(0.5)
-
-    # sleep if loadings... appear
     loading.check(driver)
 
     # send_key lesson_code then sleep 0.5 second
     search.send_keys(lesson_code)
     sleep(0.5)
-
     loading.check(driver)
 
 
 # Filter items found based on lesson code
 def matching(driver, lesson_code):
+    loading.check(driver)
     # List of items found that match the lesson code
     match = []
 
-    items_box = WebDriverWait(driver, 10).until(
+    items_box = WebDriverWait(driver, 20).until(
         EC.presence_of_element_located((By.CLASS_NAME, 'x-grid-view.x-grid-with-col-lines.x-grid-with-row-lines.x-fit'
-                                                       '-item.x-rtl.x-grid-view-default.x-unselectable.x-scroller'))
+                                                       '-item.x-rtl.x-grid-view-default.x-unselectable.x-scroller')))
+
+    items = WebDriverWait(items_box, 20).until(
+        EC.presence_of_all_elements_located((By.TAG_NAME, 'table'))
     )
 
-    items = items_box.find_elements(By.TAG_NAME, 'table')
-
     for i in range(1, len(items) + 1):
-        lesson_code_in_table = f'/html/body/div[5]/div/div/div/div/div/div/div/div[1]/div/div/div/div/div[2]' \
+        lesson_code_in_table_xpath = f'/html/body/div[5]/div/div/div/div/div/div/div/div[1]/div/div/div/div/div[2]' \
                                f'/div[2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]' \
                                f'/table[{i}]/tbody/tr/td[3]/div'
-        if lesson_code in driver.find_element(By.XPATH, lesson_code_in_table).text:
+        lesson_code_in_table = WebDriverWait(driver, 20).until(
+        EC.presence_of_element_located((By.XPATH, lesson_code_in_table_xpath)))
+
+        if lesson_code in lesson_code_in_table.text:
             match.append({'row': i, 'webelement': items[i - 1]})
 
-    # return selenium WebElement
+    # return lesson row id + selenium WebElement
     return match
