@@ -74,11 +74,12 @@ def get_one_code():
         return code.fetchone()
 
 
-# return tables name in database
+# return tables name in database , like ['classrooms', 'codes', 'meetings']
 def get_tables_name():
     with sqlite3.connect('database.db') as connections:
         cursor = connections.cursor()
 
         tables = cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        tables_name = [item[0] for item in tables.fetchall()]
 
-        return tables.fetchall()
+        return tables_name
