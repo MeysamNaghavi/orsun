@@ -72,3 +72,13 @@ def get_one_code():
         code = cursor.execute('SELECT lesson_code FROM codes')
 
         return code.fetchone()
+
+
+# return tables name in database
+def get_tables_name():
+    with sqlite3.connect('database.db') as connections:
+        cursor = connections.cursor()
+
+        tables = cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+
+        return tables.fetchall()
