@@ -19,7 +19,7 @@ def save_classrooms_db(data):
                         description text)
                         ''')
 
-        cursor.executemany('INSERT INTO classrooms VALUES (:lesson_code ,:lesson_name ,:teacher_fname ,'
+        cursor.executemany('INSERT OR REPLACE INTO classrooms VALUES (:lesson_code ,:lesson_name ,:teacher_fname ,'
                            ':teacher_lname ,:teacher_mobile ,:degree ,:exam_type ,:city ,:description)', data)
 
     print("Database created successfully")
