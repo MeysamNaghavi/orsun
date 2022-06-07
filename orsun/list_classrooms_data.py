@@ -1,7 +1,10 @@
+from time import sleep
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from persiantools import characters
+from orsun import loading
 import requests
 import re
 
@@ -21,6 +24,7 @@ my_header = {
 
 # find bj and id,which are required for the request.get
 def find_required(driver):
+    loading.check(driver)
     # find bj in dom
     bj_link = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, '.x-panel.x-abs-layout-item.x-rtl.x-panel-default.x-grid'))
@@ -66,6 +70,7 @@ def classrooms_data_creator(response):
 
 # for requests to get all classrooms data
 def get_classrooms_data(driver, base_url):
+    loading.check(driver)
     bj_and_id = find_required(driver)
     url = f'{base_url}hyper_server.dll/HandleEvent?IsEvent=1&Obj={bj_and_id["bj_link"]}' \
           f'&Evt=data&_S_ID={bj_and_id["id_link"]}&options=1&page=1&start=0&limit=25 '
