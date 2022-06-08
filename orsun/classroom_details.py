@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from persiantools import characters
 from orsun import loading
+from time import sleep
 import requests
 import re
 
@@ -38,9 +39,12 @@ def find_required(driver):
             (By.CSS_SELECTOR, '.x-panel-body.x-grid-with-col-lines.x-grid-with-row-lines'
                               '.x-grid-body.x-panel-body-default.x-panel-body-default.x-rtl'
                               '')))
-
-    bj_link = bj_link[1].get_attribute('id')
-    bj_link = bj_link[:bj_link.find('_')]
+    try:
+        bj_link = bj_link[1].get_attribute('id')
+        bj_link = bj_link[:bj_link.find('_')]
+    except IndexError:
+        sleep(5)
+        return find_required(driver)
 
     id_link = WebDriverWait(driver, 20).until(
         EC.presence_of_element_located((By.TAG_NAME, 'iframe'))
@@ -67,7 +71,8 @@ def details_data_creator(response):
     return {'meetings': classroom_details_list}
 
 
-def get_details_data(base_url, bj_and_id):
+def get_details_data(driver, base_url, bj_and_id):
+    loading.check(driver)
     url = f"{base_url}hyper_server.dll/HandleEvent?IsEvent=1&Obj={bj_and_id.get('bj_link')}" \
           f"&Evt=data&_S_ID={bj_and_id.get('id_link')}&options=1&page=1&start=0&limit=25"
 
@@ -85,7 +90,8 @@ def classroom_info(driver, item):
 
     row = item.get('row')
     classroom_name = f'/html/body/div[5]/div/div/div/div/div/div/div/div[1]/div/div/div/div/div[2]/div[' \
-                     f'2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/table[{row}]/tbody/tr/td[4]/div'
+                     f'2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/table[{row}]/tbody/tr/td[' \
+                     f'4]/div '
 
     teacher_fname = f'/html/body/div[5]/div/div/div/div/div/div/div/div[1]/div/div/div/div/div[2]/div[' \
                     f'2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/table[{row}]/tbody/tr/td[' \
@@ -95,9 +101,22 @@ def classroom_info(driver, item):
                     f'2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]/table[{row}]/tbody/tr/td[' \
                     f'6]/div'
 
-    classroom = characters.ar_to_fa(driver.find_element(By.XPATH, classroom_name).text)
-    teacher = characters.ar_to_fa(driver.find_element(By.XPATH, teacher_fname).text + ' ' +
-                                  driver.find_element(By.XPATH, teacher_lname).text)
+    classroom =  WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.XPATH, classroom_name))
+    ).text
+
+    fname_teacher =  WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.XPATH, teacher_fname))
+    ).text
+
+    lname_teacher = WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.XPATH, teacher_lname))
+    ).text
+
+    teacher = fname_teacher + ' ' + lname_teacher
+
+    classroom = characters.ar_to_fa(classroom)
+    teacher = characters.ar_to_fa(teacher)
 
     return {'classroom_name': classroom, 'teacher': teacher}
 
@@ -107,14 +126,14 @@ def get_details(driver, items, base_url):
     all_classrooms_meetings = []
     for item in items:
         classroom = {}
-
+        loading.check(driver)
         classroom_and_teacher_name = classroom_info(driver, item)
         classroom.update(classroom_and_teacher_name)
 
         click(driver, item)
         loading.check(driver)
 
-        meetings = get_details_data(base_url=base_url, bj_and_id=find_required(driver))
+        meetings = get_details_data(driver, base_url=base_url, bj_and_id=find_required(driver))
         classroom.update(meetings)
 
         all_classrooms_meetings.append(classroom)
