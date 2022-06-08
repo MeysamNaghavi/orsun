@@ -28,12 +28,14 @@ def find(driver, lesson_code):
 
     # click on search box and clear filed then sleep 0.5 second
     loading.check(driver)
-    search.click()
+    # search.click()
 
     # clear search field
     search.clear()
     sleep(0.5)
     loading.check(driver)
+
+    loading.is_ready_to_sendkeys(driver)
 
     # send_key lesson_code then sleep 0.5 second
     search.send_keys(lesson_code)
@@ -60,7 +62,7 @@ def matching(driver, lesson_code):
                                f'/div[2]/div/div/div/div/div/div/div/div/div/div[2]/div/div[2]/div/div[2]' \
                                f'/table[{i}]/tbody/tr/td[3]/div'
         lesson_code_in_table = WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((By.XPATH, lesson_code_in_table_xpath)))
+        EC.element_to_be_clickable((By.XPATH, lesson_code_in_table_xpath)))
 
         if lesson_code in lesson_code_in_table.text:
             match.append({'row': i, 'webelement': items[i - 1]})
