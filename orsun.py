@@ -1,6 +1,6 @@
 from time import sleep
 from selenium.common import NoSuchElementException, StaleElementReferenceException
-from auth import login
+from orsun import login
 from orsun import classroom, list_classrooms_data
 from orsun import db
 from orsun import loading, search
